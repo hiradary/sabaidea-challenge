@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+
+import Card from "./components/Card";
+import { fetchVideos } from "./store";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import "./App.css";
 
 function App() {
+  const dispatch = useAppDispatch();
+  const status = useAppSelector((state) => state.app.status);
+  const videos = useAppSelector((state) => state.app.videos);
+
+  // useEffect(() => {
+  //   // dispatch(fetchVideos());
+
+  //   if (status !== 'succeeded') return;
+  // }, [status]);
+
+  if (status === "loading") {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {videos.map((item) => {
+        return <Card key={item.id} {...item.attributes} />;
+      })}
     </div>
   );
 }
