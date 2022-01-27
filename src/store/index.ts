@@ -18,7 +18,7 @@ const initialState: AppState = {
 
 export const fetchVideos = createAsyncThunk("app/fetchVideos", async () => {
   const response = await fetch(
-    "http://api.aparat.com/fa/v1/video/video/mostViewedVideos",
+    "https://api.aparat.com/fa/v1/video/video/mostViewedVideos",
     {
       method: "GET",
       headers: {
