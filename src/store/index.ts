@@ -3,7 +3,6 @@ import {
   configureStore,
   createAsyncThunk,
 } from "@reduxjs/toolkit";
-import { VIDEOS } from "../constants";
 
 interface AppState {
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -14,7 +13,7 @@ interface AppState {
 const initialState: AppState = {
   status: "idle",
   error: null,
-  videos: VIDEOS,
+  videos: [],
 };
 
 export const fetchVideos = createAsyncThunk("app/fetchVideos", async () => {
@@ -22,7 +21,6 @@ export const fetchVideos = createAsyncThunk("app/fetchVideos", async () => {
     "http://api.aparat.com/fa/v1/video/video/mostViewedVideos",
     {
       method: "GET",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
@@ -31,7 +29,7 @@ export const fetchVideos = createAsyncThunk("app/fetchVideos", async () => {
     return res.json();
   });
 
-  return response;
+  return response.data;
 });
 
 export const appSlice = createSlice({

@@ -3,38 +3,41 @@ import { useIntersectionObserver } from "../../hooks";
 import "./Card.css";
 
 const Card = (Props: any) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const entry = useIntersectionObserver(ref, { threshold: 0.6 });
+  const cardEl = useRef<HTMLDivElement | null>(null);
+  const videoEl = useRef<HTMLVideoElement | null>(null);
+  const entry = useIntersectionObserver(cardEl, { threshold: 0.7 });
   const isVisible = entry?.isIntersecting;
 
   const { id, preview_src, title } = Props;
 
-  const pauseAllVideos = () => {
+  const pauseOtherVideos = () => {
     [...document.querySelectorAll(`video`)].forEach((item) => {
+      const isCurrentVideo = item.getAttribute("data-id") === id;
+      if (isCurrentVideo) return;
+
       item.pause();
     });
   };
 
   useEffect(() => {
-    if (!isVisible || !entry.target) return;
+    if (!isVisible || !entry.target || !videoEl.current) return;
 
-    const videoEl: HTMLVideoElement | null = document.querySelector(
-      `[data-videoId="${id}"]`
-    );
-
-    if (!videoEl) return;
-
-    pauseAllVideos();
-
-    videoEl.play();
-
-    console.log({ videoEl });
+    videoEl.current.play();
+    pauseOtherVideos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
   return (
-    <section className="cardContainer" ref={ref}>
+    <section className="cardContainer" ref={cardEl}>
       <div className="card">
-        <video title={title} src={preview_src} controls data-videoId={id} />
+        <video
+          title={title}
+          src={preview_src}
+          ref={videoEl}
+          controls
+          data-id={id}
+        />
+        <h3>{title}</h3>
       </div>
     </section>
   );
